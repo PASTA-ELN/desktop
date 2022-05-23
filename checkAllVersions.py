@@ -1,11 +1,13 @@
 #!/usr/bin/python3
-""" TEST ALL THE CODES: Python, ElectronDOM,...
+""" TEST ALL THE CODES: Python, Electron, DOM,...
+runs in base-repositories. Does not enter Desktop/...
 might use lots of waiting time to ensure that things are finished
 """
-import subprocess, os, time, re, sys, datetime
+import subprocess, os, time, re, sys, datetime, json
 from pprint import pprint
 import unittest
-import shutil, json, psutil
+import psutil
+import shutil
 import numpy as np
 
 
@@ -140,7 +142,8 @@ def testPython():
            'extractorTest -d pasta_tutorial -p IntermetalsAtInterfaces/002_SEMImages/Zeiss.tif -c measurement/tif/image/scale/adaptive']
   for test in tests:
     cmd = ['pastaELN.py']+test.split(' ')
-    _   = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
+      continue
   os.chdir('..')
   if successAll:
     print("ALL SUCCESS: GIT PUSH ")
@@ -155,55 +158,55 @@ def compareDOM_ELECTRON():
   now = datetime.datetime.now().replace(microsecond=0)
   print('==== Compare ReactDOM and ReactElectron ====')
   print('  App.js and index.js should be different but changes should be propagated')
-  result = subprocess.Popen(['diff','-q','ReactDOM/src','ReactElectron/app/renderer'], stdout=subprocess.PIPE)
-  result.wait()
-  result = result.stdout.read()
-  result = result.decode('utf-8').split('\n')
-  for line in result:
-    if 'differ' in line and 'Files' in line:
-      domFile = line.split()[1]
-      electronFile = line.split()[3]
-      if 'localInteraction.js' in domFile:
-        continue
-      domTime =      now-datetime.datetime.fromtimestamp(os.path.getmtime(domFile)).replace(microsecond=0)
-      electronTime = now-datetime.datetime.fromtimestamp(os.path.getmtime(electronFile)).replace(microsecond=0)
-      print("  Files are different\t\t\tTime since change\n   ",domFile,'\t\t',domTime,'\n   ',electronFile,'\t',electronTime)
-      if not 'App.js' in domFile and not 'index.js' in domFile:
+  with subprocess.Popen(['diff','-q','ReactDOM/src','ReactElectron/app/renderer'], stdout=subprocess.PIPE) as result:
+    result.wait()
+    result = result.stdout.read()
+    result = result.decode('utf-8').split('\n')
+    for line in result:
+      if 'differ' in line and 'Files' in line:
+        domFile = line.split()[1]
+        electronFile = line.split()[3]
+        if 'localInteraction.js' in domFile:
+          continue
+        domTime =      now-datetime.datetime.fromtimestamp(os.path.getmtime(domFile)).replace(microsecond=0)
+        electronTime = now-datetime.datetime.fromtimestamp(os.path.getmtime(electronFile)).replace(microsecond=0)
+        print("  Files are different\t\t\tTime since change\n   ",domFile,'\t\t',domTime,'\n   ',electronFile,'\t',electronTime)
+        if not 'App.js' in domFile and not 'index.js' in domFile:
+          os.system('kdiff3 '+domFile+' '+electronFile)
+          if not 'errorCodes.js' in domFile:
+            failure=True
+          if domTime<electronTime:
+            print('    -> DOM is newer: copy file')
+            shutil.copy(domFile,electronFile)
+          else:
+            print('    -> Electron is newer: copy file')
+            shutil.copy(electronFile,domFile)
+      if 'Only' in line:
+        if 'App.test.js' in line:
+          continue
+        print("  File only in one directory",' '.join(line.split()[2:]))
+  with subprocess.Popen(['diff','-q','ReactDOM/src/components','ReactElectron/app/renderer/components'], stdout=subprocess.PIPE) as result:
+    result.wait()
+    result = result.stdout.read()
+    result = result.decode('utf-8').split('\n')
+    for line in result:
+      if 'differ' in line and 'Files' in line:
+        domFile = line.split()[1]
+        electronFile = line.split()[3]
+        domTime =      now-datetime.datetime.fromtimestamp(os.path.getmtime(domFile)).replace(microsecond=0)
+        electronTime = now-datetime.datetime.fromtimestamp(os.path.getmtime(electronFile)).replace(microsecond=0)
+        print("  Files are different\t\t\tTime since change\n   ",domFile,'\t\t',domTime,'\n   ',electronFile,'\t',electronTime)
         os.system('kdiff3 '+domFile+' '+electronFile)
-        if not 'errorCodes.js' in domFile:
-          failure=True
+        failure=True
         if domTime<electronTime:
           print('    -> DOM is newer: copy file')
           shutil.copy(domFile,electronFile)
         else:
           print('    -> Electron is newer: copy file')
           shutil.copy(electronFile,domFile)
-    if 'Only' in line:
-      if 'App.test.js' in line:
-        continue
-      print("  File only in one directory",' '.join(line.split()[2:]))
-  result = subprocess.Popen(['diff','-q','ReactDOM/src/components','ReactElectron/app/renderer/components'], stdout=subprocess.PIPE)
-  result.wait()
-  result = result.stdout.read()
-  result = result.decode('utf-8').split('\n')
-  for line in result:
-    if 'differ' in line and 'Files' in line:
-      domFile = line.split()[1]
-      electronFile = line.split()[3]
-      domTime =      now-datetime.datetime.fromtimestamp(os.path.getmtime(domFile)).replace(microsecond=0)
-      electronTime = now-datetime.datetime.fromtimestamp(os.path.getmtime(electronFile)).replace(microsecond=0)
-      print("  Files are different\t\t\tTime since change\n   ",domFile,'\t\t',domTime,'\n   ',electronFile,'\t',electronTime)
-      os.system('kdiff3 '+domFile+' '+electronFile)
-      failure=True
-      if domTime<electronTime:
-        print('    -> DOM is newer: copy file')
-        shutil.copy(domFile,electronFile)
-      else:
-        print('    -> Electron is newer: copy file')
-        shutil.copy(electronFile,domFile)
-    if 'Only' in line:
-      print("  File only in one directory",' '.join(line.split()[2:]))
-      failure=True
+      if 'Only' in line:
+        print("  File only in one directory",' '.join(line.split()[2:]))
+        failure=True
   if failure:
     print('**FAILURE of compare')
   else:
@@ -247,14 +250,14 @@ def testDOM():
 
   ### cypress, after linting
   text = None
-  with open('src/localInteraction.js','r') as fIn:
+  with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
     text = fIn.read()
   text = text.replace('const ELECTRON = false;','const ELECTRON = true;')
-  with open('src/localInteraction.js','w') as fOut:
+  with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
     fOut.write(text)
   print('  -- Start cypress test: Be patient!')
-  server = subprocess.Popen(['npm','start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-  time.sleep(60)
+  with subprocess.Popen(['npm','start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as _:
+    time.sleep(60)
   result = subprocess.run(['npx','cypress','run','-q'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
   result = result.stdout.decode('utf-8').split('\n')
   failures = [line for line in result if 'failures": [' in line]
@@ -266,10 +269,10 @@ def testDOM():
   else:
     print('  success: cypress')
   text = None
-  with open('src/localInteraction.js','r') as fIn:
+  with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
     text = fIn.read()
   text = text.replace('const ELECTRON = true;','const ELECTRON = false;')
-  with open('src/localInteraction.js','w') as fOut:
+  with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
     fOut.write(text)
   # find all children processes and terminate everything
   allPIDs = [server.pid]
@@ -377,7 +380,7 @@ def gitCommitPush(msg1, version=None, msg2=''):
       version= 'v'+'.'.join([str(i) for i in verList])
     if i=='ReactElectron':
       ### package.json ###
-      with open('package.json') as fIn:
+      with open('package.json', encoding='utf-8') as fIn:
         packageOld = fIn.readlines()
       packageNew = []
       for line in packageOld:
@@ -385,10 +388,10 @@ def gitCommitPush(msg1, version=None, msg2=''):
         if '"version":' in line:
           line = '  "version": "'+version[1:]+'",'
         packageNew.append(line)
-      with open('package.json','w') as fOut:
+      with open('package.json','w', encoding='utf-8') as fOut:
         fOut.write('\n'.join(packageNew)+'\n')
       ### version in configuration.js ###
-      with open('app/renderer/components/ConfigPage.js') as fIn:
+      with open('app/renderer/components/ConfigPage.js', encoding='utf-8') as fIn:
         fileOld = fIn.readlines()
       fileNew = []
       for line in fileOld:
@@ -396,7 +399,7 @@ def gitCommitPush(msg1, version=None, msg2=''):
         if '<p style={flowText}>Version number:' in line:
           line = '          <p style={flowText}>Version number: '+version[1:]+'</p>'
         fileNew.append(line)
-      with open('app/renderer/components/ConfigPage.js','w') as fOut:
+      with open('app/renderer/components/ConfigPage.js','w', encoding='utf-8') as fOut:
         fOut.write('\n'.join(fileNew)+'\n')
     os.system('git commit -a -m "'+msg1+'"')
     os.system('git tag -a '+version+' -m "'+msg2+'"')
