@@ -3,11 +3,10 @@
 runs in base-repositories. Does not enter Desktop/...
 might use lots of waiting time to ensure that things are finished
 """
-import subprocess, os, time, re, sys, datetime, json
+import subprocess, os, time, re, sys, datetime, json, shutil
 from pprint import pprint
 import unittest
 import psutil
-import shutil
 import numpy as np
 
 
@@ -142,7 +141,7 @@ def testPython():
            'extractorTest -d pasta_tutorial -p IntermetalsAtInterfaces/002_SEMImages/Zeiss.tif -c measurement/tif/image/scale/adaptive']
   for test in tests:
     cmd = ['pastaELN.py']+test.split(' ')
-    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as _:
       continue
   os.chdir('..')
   if successAll:
@@ -256,26 +255,26 @@ def testDOM():
   with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
     fOut.write(text)
   print('  -- Start cypress test: Be patient!')
-  with subprocess.Popen(['npm','start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as _:
+  with subprocess.Popen(['npm','start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as server:
     time.sleep(60)
-  result = subprocess.run(['npx','cypress','run','-q'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
-  result = result.stdout.decode('utf-8').split('\n')
-  failures = [line for line in result if 'failures": [' in line]
-  failures = ['[]' not in line for line in failures]
-  if np.any(failures):
-    print('**FAILED : cypress failed test')
-    print('    - '+'\n    - '.join(np.array([line[20:-3].strip() for line in result if 'fullTitle"' in line][::2])[failures]))
-    # print('    Message of failure: '+str([line for line in result if '"message"' in line][::4]))
-  else:
-    print('  success: cypress')
-  text = None
-  with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
-    text = fIn.read()
-  text = text.replace('const ELECTRON = true;','const ELECTRON = false;')
-  with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
-    fOut.write(text)
-  # find all children processes and terminate everything
-  allPIDs = [server.pid]
+    result = subprocess.run(['npx','cypress','run','-q'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+    result = result.stdout.decode('utf-8').split('\n')
+    failures = [line for line in result if 'failures": [' in line]
+    failures = ['[]' not in line for line in failures]
+    if np.any(failures):
+      print('**FAILED : cypress failed test')
+      print('    - '+'\n    - '.join(np.array([line[20:-3].strip() for line in result if 'fullTitle"' in line][::2])[failures]))
+      # print('    Message of failure: '+str([line for line in result if '"message"' in line][::4]))
+    else:
+      print('  success: cypress')
+    text = None
+    with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
+      text = fIn.read()
+    text = text.replace('const ELECTRON = true;','const ELECTRON = false;')
+    with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
+      fOut.write(text)
+    # find all children processes and terminate everything
+    allPIDs = [server.pid]
   allPIDs += [i.pid for i in psutil.Process(allPIDs[0]).children(recursive=True)]
   for pid in allPIDs:
     psutil.Process(pid).terminate()
