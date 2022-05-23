@@ -1,0 +1,6 @@
+[submodule "Python"]
+	path = Python
+	url = git@github.com:PASTA-ELN/Python.git
+[submodule "Electron"]
+	path = Electron
+	url = git@github.com:PASTA-ELN/Electron.git
