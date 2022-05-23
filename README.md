@@ -1,4 +1,7 @@
-### Content for desktop installation of PASTA-ELN
+
+[![Pylint](https://github.com/PASTA-ELN/desktop/actions/workflows/pylint.yml/badge.svg)](https://github.com/PASTA-ELN/desktop/actions/workflows/pylint.yml)
+
+### PASTA-ELN | Content for desktop computers
 Bracket over submodules for Python backend and NodeJS GUI for Windows, Linux and MacOS. This includes all the install-scripts and general end-to-end testing.
 
 For Ubuntu and Windows, there are installation scripts in this list.
