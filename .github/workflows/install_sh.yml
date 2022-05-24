@@ -4,7 +4,8 @@ on: [push]
 
 env:
   DB_USER: admin
-  CDB_PASSW: $(date +%s | sha256sum | base64 | head --bytes=12; echo)
+  CDB_PASSW: NzRhMjJiZDdm
+# password hard coded since I cannot get the automatic creation to work
 
 jobs:
   build:
