@@ -19,7 +19,7 @@ def testPython():
   os.chdir('Python')
   ### pylint
   success = True
-  for fileName in ['backend.py', 'database.py', 'pastaELN.py', 'miscTools.py', 'checkAllVersions.py']:
+  for fileName in ['backend.py', 'database.py', 'pastaELN.py', 'miscTools.py']:
     result = subprocess.run(['pylint',fileName], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False)
     if 'rated at 10.00/10' not in result.stdout.decode('utf-8'):
       print(fileName+'|'+result.stdout.decode('utf-8').strip())
@@ -155,9 +155,9 @@ def compareDOM_ELECTRON():
   """
   failure = False
   now = datetime.datetime.now().replace(microsecond=0)
-  print('==== Compare ReactDOM and ReactElectron ====')
+  print('==== Compare DOM and Electron ====')
   print('  App.js and index.js should be different but changes should be propagated')
-  with subprocess.Popen(['diff','-q','ReactDOM/src','ReactElectron/app/renderer'], stdout=subprocess.PIPE) as result:
+  with subprocess.Popen(['diff','-q','DOM/src','Electron/app/renderer'], stdout=subprocess.PIPE) as result:
     result.wait()
     result = result.stdout.read()
     result = result.decode('utf-8').split('\n')
@@ -184,7 +184,7 @@ def compareDOM_ELECTRON():
         if 'App.test.js' in line:
           continue
         print("  File only in one directory",' '.join(line.split()[2:]))
-  with subprocess.Popen(['diff','-q','ReactDOM/src/components','ReactElectron/app/renderer/components'], stdout=subprocess.PIPE) as result:
+  with subprocess.Popen(['diff','-q','DOM/src/components','Electron/app/renderer/components'], stdout=subprocess.PIPE) as result:
     result.wait()
     result = result.stdout.read()
     result = result.decode('utf-8').split('\n')
@@ -218,8 +218,8 @@ def testDOM():
   """
   TEST REACT-DOM CODE
   """
-  print('==== ReactDOM ====')
-  os.chdir('ReactDOM')
+  print('==== DOM ====')
+  os.chdir('DOM')
   ### js-lint
   success = True
   for root, _, files in os.walk("src"):
@@ -288,8 +288,8 @@ def testElectron():
   """
   TEST REACT-ELECTRON CODE
   """
-  print('==== ReactElectron ====')
-  os.chdir('ReactElectron')
+  print('==== Electron ====')
+  os.chdir('Electron')
   ### git test
   result = subprocess.check_output(['git','status'], stderr=subprocess.STDOUT)
   if len([1 for i in result.decode('utf-8').split('\n') if i.startswith('\tmodified:')])==0:
@@ -312,6 +312,21 @@ def testElectron():
   # else:
   #   print('  FAILED : eslint not 100%. run "npx eslint [file]"')
   os.chdir('..')
+  return
+
+
+def testDesktop():
+  """
+  TEST DESKTOP
+  """
+  print('==== Desktop ====')
+  os.chdir('Desktop')
+  ### git test
+  result = subprocess.check_output(['git','status'], stderr=subprocess.STDOUT)
+  if len([1 for i in result.decode('utf-8').split('\n') if i.startswith('\tmodified:')])==0:
+    print('  success: Git tree clean')
+  else:
+    print('  FAILED : Submit to git')
   return
 
 
@@ -437,6 +452,7 @@ if __name__=='__main__':
     compareDOM_ELECTRON()
     testDOM()
     testElectron()
+    testDesktop()
     testDocumentation()
     cleanAll()
     print('Only if all success: git push [everywhere]')
