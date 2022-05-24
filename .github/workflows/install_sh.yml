@@ -36,13 +36,13 @@ jobs:
     - name: Install CouchDB
       run: |
         sudo snap install couchdb
-        sudo snap set couchdb admin=$CDB_PASSW
+        sudo snap set couchdb admin=${{env.CDB_PASSW}}
         sudo snap start couchdb
         sudo snap connect couchdb:mount-observe
         sudo snap connect couchdb:process-control
         sleep 5
         curl http://127.0.0.1:5984
-        curl -X PUT http://${{env.CDB_USER}}:${{env.CDB_PASSW}}@127.0.0.1:5984/_users
+        curl -X PUT http://admin:NzRhMjJiZDdm@127.0.0.1:5984/_users
         curl -X PUT http://${{env.CDB_USER}}:${{env.CDB_PASSW}}@127.0.0.1:5984/_replicator
         curl -X PUT http://${{env.CDB_USER}}:${{env.CDB_PASSW}}@127.0.0.1:5984/_global_changes
 
