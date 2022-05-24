@@ -48,5 +48,6 @@ jobs:
         # I had to hard-code the username and password since is not being expandend by actions
     - name: Adopt directory structure
       run: |
+        cd ..
+        mkdir PastaData
         ls -l
-        cwd
