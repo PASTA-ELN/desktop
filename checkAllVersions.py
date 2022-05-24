@@ -441,17 +441,14 @@ if __name__=='__main__':
     cleanAll()
     print('Only if all success: git push [everywhere]')
 
-
-"""
-2011  cd Python/
- 2012  git fetch
- 2013  git merge
- 2014  cd ../Electron/
- 2015  git fetch
- 2016  git merge
- 2017  cd ..
- 2018  diff Python/ ../Python/
- 2019  git status
- 2020  git commit -a -m 'include python changes'
- 2021  git push
-"""
+# 2011  cd Python/
+#  2012  git fetch
+#  2013  git merge
+#  2014  cd ../Electron/
+#  2015  git fetch
+#  2016  git merge
+#  2017  cd ..
+#  2018  diff Python/ ../Python/
+#  2019  git status
+#  2020  git commit -a -m 'include python changes'
+#  2021  git push
