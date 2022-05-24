@@ -1,0 +1,30 @@
+name: Verify install.sh
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    - name: Install APT packages
+      run: |
+        add-apt-repository -y universe
+        apt-get install -y python3 python3-pip pandoc npm
+    - name: Install git, git-annex, datalad
+      run: |
+        wget -O- http://neuro.debian.net/lists/focal.de-fzj.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+        apt-key adv --recv-keys --keyserver hkps://keyserver.ubuntu.com 0xA5D32F012649A5A9
+        apt-get update
+        apt-get install -y datalad
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r Python/requirements.txt
