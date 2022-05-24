@@ -43,6 +43,10 @@ jobs:
         sudo snap connect couchdb:process-control
         sleep 5
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_users
-        curl -X PUT http://$admin:NzRhMjJiZDdm@127.0.0.1:5984/_replicator
-        curl -X PUT http://$admin:NzRhMjJiZDdm@127.0.0.1:5984/_global_changes
+        curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_replicator
+        curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes
         # I had to hard-code the username and password since is not being expandend by actions
+    - name: Adopt directory structure
+      run: |
+        ls -l
+        cwd
