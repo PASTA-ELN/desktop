@@ -28,3 +28,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r Python/requirements.txt
+    - name: Install CouchDB
+      run: |
+        DB_USER="admin"
+        CDB_PASSW=$(date +%s | sha256sum | base64 | head -c 12 ; echo)
+        sudo snap install couchdb
+        sudo snap set couchdb admin=${{CDB_PASSW}}
+        sudo snap start couchdb
+        sudo snap connect couchdb:mount-observe
+        sudo snap connect couchdb:process-control
+        sleep 5
+        curl -X PUT http://${{CDB_USER}}:${{CDB_PASSW}}@127.0.0.1:5984/_users
+        curl -X PUT http://${{CDB_USER}}:${{CDB_PASSW}}@127.0.0.1:5984/_replicator
+        curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes  >> installPASTA2.log  2>&1
+
