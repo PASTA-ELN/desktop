@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Installer for PASTA database on Debian/Ubuntu-Linux"
-echo "IMPORTANT: if you have problems, visit https://jugit.fz-juelich.de/pasta/main/-/wikis/home#installation-scripts"
+echo "IMPORTANT: if you have problems, visit https://pasta-eln.github.io"
 echo "Default choices are accepted by return: [Y/n]->yes; [default]->default"
 
 echo "Ensure installer has sudo rights"
