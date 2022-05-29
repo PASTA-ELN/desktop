@@ -38,8 +38,8 @@ with open(homeDir+os.sep+'.pastaELN.json','w') as fOut:
   fOut.write(json.dumps(content, indent=2) )
 
 content ='[Desktop Entry]\nName=PASTA ELN\nComment=PASTA electronic labnotebook\n'
-content+='Exec='+os.path.expanduser('~')+os.sep+softwareDir+"/install.sh\n"
-content+='Icon='+os.path.expanduser('~')+os.sep+softwareDir+"/pasta.png\n"
+content+='Exec='+softwareDir+"/install.sh\n"
+content+='Icon='+softwareDir+"/pasta.png\n"
 content+='Terminal=false\nType=Application\nCategories=Utility;Application;\n'
 try:
   with open(homeDir+os.sep+'Desktop/pastaELN.desktop','w') as fOut:
