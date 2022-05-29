@@ -12,9 +12,13 @@ if len(sys.argv)<3:
 else:
   pastaDir = sys.argv[2]
 if len(sys.argv)<4:
+  homeDir = input('Please enter the absoloute path of the HOME DIRECTORY: ')
+else:
+  homeDir = sys.argv[3]
+if len(sys.argv)<5:
   password = ''.join(random.choice(string.ascii_letters) for i in range(12))
 else:
-  password = sys.argv[3]
+  password = sys.argv[4]
 
 softwareDir = os.path.expanduser('~')+os.sep+softwareDir
 pastaDir = os.path.expanduser('~')+os.sep+pastaDir
