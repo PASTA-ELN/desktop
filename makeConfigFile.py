@@ -35,6 +35,8 @@ content['tableFormat'] = {'x0':{'-label-':'Projects','-default-': [22,6,50,22]},
                           'procedure':{'-default-': [20,20,20,40]}}
 with open(os.path.expanduser('~')+os.sep+'.pastaELN.json','w') as fOut:
   fOut.write(json.dumps(content, indent=2) )
+  print('dumbed')
+print('dumbed')
 
 content ='[Desktop Entry]\nName=PASTA ELN\nComment=PASTA electronic labnotebook\n'
 content+='Exec='+os.path.expanduser('~')+os.sep+softwareDir+"/install.sh"
