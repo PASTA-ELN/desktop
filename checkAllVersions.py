@@ -362,7 +362,7 @@ def gitStatus():
   """
   Go through all subfolders and do a git status
   """
-  for i in ['Python','ReactDOM','ReactElectron','Documents']:
+  for i in ['Python','DOM','Electron','Desktop','Documentation']:
     print("\n\n------------------------------\nENTER DIRECTORY:",i)
     os.chdir(i)
     os.system('git status')
@@ -370,7 +370,7 @@ def gitStatus():
   return
 
 
-def gitCommitPush(msg1, version=None, msg2=''):
+def gitCommitPush(msg):
   """
   Go through all subfolders and
     - do a git commit with message msg
@@ -378,11 +378,29 @@ def gitCommitPush(msg1, version=None, msg2=''):
     - git push
 
   Args:
-    msg1 (string): message for git commit
-    version (string): new version number; if not given, increment the last digit by one
-    msg2 (string): message to the tag
+    msg (string): message for git commit
   """
-  for i in ['Python','ReactDOM','ReactElectron','Documents']:
+  for i in ['Python','DOM','Electron','Desktop','Documentation']:
+    print("\n\n------------------------------\nENTER DIRECTORY:",i)
+    os.chdir(i)
+    os.system('git commit -a -m "'+msg+'"')
+    os.system('git push')
+    os.chdir('..')
+  return
+
+
+def gitNewVersion(msg, version=None):
+  """
+  Create a new version:
+    - Go through all subfolders and
+    - tag it with a version number
+    - git push
+
+  Args:
+    msg (string): message for git version message
+    version (string): version number, e.g. v1.0.0
+  """
+  for i in ['Python','DOM','Electron','Desktop','Documentation']:
     print("\n\n------------------------------\nENTER DIRECTORY:",i)
     os.chdir(i)
     if version is None and i=='Python':
@@ -392,7 +410,7 @@ def gitCommitPush(msg1, version=None, msg2=''):
       verList= [int(i) for i in version[1:].split('.')]
       verList[-1]+= 1
       version= 'v'+'.'.join([str(i) for i in verList])
-    if i=='ReactElectron':
+    if i=='Electron':
       ### package.json ###
       with open('package.json', encoding='utf-8') as fIn:
         packageOld = fIn.readlines()
@@ -415,10 +433,14 @@ def gitCommitPush(msg1, version=None, msg2=''):
         fileNew.append(line)
       with open('app/renderer/components/ConfigPage.js','w', encoding='utf-8') as fOut:
         fOut.write('\n'.join(fileNew)+'\n')
-    os.system('git commit -a -m "'+msg1+'"')
-    os.system('git tag -a '+version+' -m "'+msg2+'"')
-    os.system('git push')
-    os.system('git push origin '+version)
+      #create new version of GUI
+      # os.system('npm run build')
+      shutil.copyfile('dist/pasta-'+version[1:]+'.AppImage'  ,'../Desktop/pasta-linux.AppImage')
+      shutil.copyfile('dist/PASTA-'+version[1:]+'-mac.tar.gz','../Desktop/PASTA-mac.tar.gz')
+      shutil.copyfile('dist/PASTA Setup '+version[1:]+'.exe' ,'../Desktop/PASTA-Setup-win.exe')
+    # os.system('git tag -a '+version+' -m "'+msg+'"')
+    # os.system('git push')
+    # os.system('git push origin '+version)
     os.chdir('..')
   return
 
@@ -441,9 +463,11 @@ if __name__=='__main__':
       gitStatus()
     elif sys.argv[1]=='gitCommitPush':
       message = sys.argv[2] if len(sys.argv)>2 else ''
-      tagString     = sys.argv[3] if len(sys.argv)>3 else ''
-      versionString = sys.argv[4] if len(sys.argv)>4 else None
-      gitCommitPush(message, versionString, tagString)
+      gitCommitPush(message)
+    elif sys.argv[1]=='gitNewVersion':
+      tagString     = sys.argv[2] if len(sys.argv)>2 else ''
+      versionString = sys.argv[3] if len(sys.argv)>3 else None
+      gitNewVersion(tagString, versionString)
     else:
       print('Did not understand. Possible options are: Python, DOM, Electron, Documentation, compare, gitStatus, gitCommitPush')
       print('  gitCommitPush: commit_message tag_messag tag_version')
