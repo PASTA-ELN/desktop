@@ -34,6 +34,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r Python/requirements.txt
+    - name: Adopt directory structure and create .pastaELN.json
+      run: |
+        cd ..
+        mkdir PastaData
+        ls -l
     - name: Install CouchDB
       run: |
         sudo snap install couchdb
@@ -45,9 +50,3 @@ jobs:
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_users
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_replicator
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes
-        # I had to hard-code the username and password since is not being expandend by actions
-    - name: Adopt directory structure
-      run: |
-        cd ..
-        mkdir PastaData
-        ls -l

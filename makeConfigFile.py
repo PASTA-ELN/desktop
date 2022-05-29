@@ -26,6 +26,7 @@ content['links']       = {'research':{\
                         'remote':{}  }}
 content['version']     = 1
 content['softwareDir'] = softwareDir+'/Python'
+content['softwareDir'] = softwareDir+'/Python/Extractors'
 content['userID']      = os.getlogin()
 content['extractors']  = {}
 content['qrPrinter']   = {}
@@ -38,7 +39,7 @@ with open(homeDir+os.sep+'.pastaELN.json','w') as fOut:
   fOut.write(json.dumps(content, indent=2) )
 
 content ='[Desktop Entry]\nName=PASTA ELN\nComment=PASTA electronic labnotebook\n'
-content+='Exec='+softwareDir+"/install.sh\n"
+content+='Exec='+softwareDir+"/pasta-linux.AppImage\n"
 content+='Icon='+softwareDir+"/pasta.png\n"
 content+='Terminal=false\nType=Application\nCategories=Utility;Application;\n'
 try:
