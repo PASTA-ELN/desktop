@@ -61,7 +61,7 @@ sudo -u $THEUSER mkdir /home/$THEUSER/$pasta
 # #########  START INSTALLATION  #################
 echo "Ensure python, pip and pandoc are installed. This takes a few minutes"
 sudo add-apt-repository -y universe                    >> installPASTA2.log  2>&1
-sudo apt-get install -y python3 python3-pip pandoc npm >> installPASTA2.log  2>&1
+sudo apt-get install -y python3 python3-pip pandoc fuse npm >> installPASTA2.log  2>&1
 echo
 
 echo "Install git, git-annex, datalad"
@@ -85,7 +85,8 @@ echo
 cd /home/$THEUSER
 echo "Start cloning the git repositories: tools, python-backend, javascript-frontend"
 sudo -u $THEUSER git clone https://github.com/PASTA-ELN/desktop.git $pasta_src >> installPASTA2.log  2>&1
-cd  $pasta_src 
+cd  $pasta_src
+sudo -u $THEUSER chmod 755 pasta-linux.AppImage
 sudo -u $THEUSER git clone https://github.com/PASTA-ELN/Python.git >> installPASTA2.log  2>&1
 echo
 

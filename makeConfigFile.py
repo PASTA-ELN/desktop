@@ -26,7 +26,7 @@ content['links']       = {'research':{\
                         'remote':{}  }}
 content['version']     = 1
 content['softwareDir'] = softwareDir+'/Python'
-content['softwareDir'] = softwareDir+'/Python/Extractors'
+content['extractorDir']= softwareDir+'/Python/Extractors'
 content['userID']      = os.getlogin()
 content['extractors']  = {}
 content['qrPrinter']   = {}
