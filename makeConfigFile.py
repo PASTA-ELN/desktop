@@ -27,7 +27,10 @@ content['links']       = {'research':{\
 content['version']     = 1
 content['softwareDir'] = softwareDir+'/Python'
 content['extractorDir']= softwareDir+'/Python/Extractors'
-content['userID']      = os.getlogin()
+try:
+  content['userID']      = os.getlogin()
+except:   #github action
+  content['userID']      = 'secret'
 content['extractors']  = {}
 content['qrPrinter']   = {}
 content['magicTags']   = ['P1','P2','P3','TODO','WAIT','DONE']

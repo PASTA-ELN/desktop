@@ -330,6 +330,7 @@ def testDesktop():
     print('  success: Git tree clean')
   else:
     print('  FAILED : Submit to git')
+  os.chdir('..')
   return
 
 
