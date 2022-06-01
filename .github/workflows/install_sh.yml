@@ -39,7 +39,7 @@ jobs:
     - name: Create PASTA configuration file .pastaELN.json in home directory
       run: |
         CDB_PASSW=$(python3 makeConfigFile.py ${GITHUB_WORKSPACE} PastaData)
-        echo 'password $CDB_PASSW'
+        echo 'password ${CDB_PASSW}'
     - name: Install CouchDB
       run: |
         sudo snap install couchdb
@@ -51,8 +51,9 @@ jobs:
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_users
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_replicator
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes
-    - name: Run a very short test for 5sec?
+    - name: Run a very short tests?
       run: |
+        cd Python
         python3 pastaELN.py test
         python3 pastaELN.py extractorScan
         python3 Tests/verifyInstallation.py
