@@ -3,7 +3,6 @@ name: Verify install.sh
 on: [push]
 
 env:
-  PASTA_DIR: PASTA
   CDB_USER: admin
   CDB_PASSW: NzRhMjJiZDdm
 # password hard coded since I cannot get the automatic creation to work
@@ -20,10 +19,13 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: 3.9
-    - name: Install APT packages
+    - name: Adopt directory structure and create .pastaELN.json
+      run: |
+        mkdir ../PastaData
+    - name: Ensure python, pip and pandoc are installed.
       run: |
         sudo add-apt-repository -y universe
-        sudo apt-get install -y python3 python3-pip pandoc npm
+        sudo apt-get install -y python3 python3-pip pandoc fuse npm
     - name: Install git, git-annex, datalad
       run: |
         wget -O- http://neuro.debian.net/lists/focal.de-fzj.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
@@ -34,11 +36,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r Python/requirements.txt
-    - name: Adopt directory structure and create .pastaELN.json
+    - name: Create PASTA configuration file .pastaELN.json in home directory
       run: |
-        cd ..
-        mkdir PastaData
-        ls -l
+        pasta_src=$(cwd)
+        echo 'pasta_src $pasta_src'
+        CDB_PASSW=$(python3 makeConfigFile.py $pasta_src PastaData)
+        echo 'password #CDB_PASSW'
     - name: Install CouchDB
       run: |
         sudo snap install couchdb
@@ -50,3 +53,8 @@ jobs:
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_users
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_replicator
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes
+    - name: Run a very short test for 5sec?
+      run: |
+        python3 pastaELN.py test
+        python3 pastaELN.py extractorScan
+        python3 Tests/verifyInstallation.py

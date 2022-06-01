@@ -47,7 +47,6 @@ then
 fi
 echo
 
-echo
 read -p "Do you wish to install everything [Y/n] ? " yesno
 if [[ $yesno = 'N' ]] || [[ $yesno = 'n' ]]
 then
@@ -56,10 +55,10 @@ then
 fi
 echo
 
+# #########  START INSTALLATION  #################
 sudo -u $THEUSER mkdir /home/$THEUSER/$pasta
 
-# #########  START INSTALLATION  #################
-echo "Ensure python, pip and pandoc are installed. This takes a few minutes"
+echo "Ensure python, pip and pandoc are installed."
 sudo add-apt-repository -y universe                    >> installPASTA2.log  2>&1
 sudo apt-get install -y python3 python3-pip pandoc fuse npm >> installPASTA2.log  2>&1
 echo
@@ -69,7 +68,6 @@ wget -q http://neuro.debian.net/lists/focal.de-fzj.full -O /etc/apt/sources.list
 sudo apt-key adv --recv-keys --keyserver hkps://keyserver.ubuntu.com 0xA5D32F012649A5A9 >> installPASTA2.log  2>&1
 sudo apt-get update             >> installPASTA2.log  2>&1
 sudo apt-get install -y datalad >> installPASTA2.log  2>&1
-echo
 echo
 
 OUTPUT=$(sudo -u $THEUSER git config -l | grep "user")
@@ -98,7 +96,7 @@ if [ ! -n "$(grep "^#PASTA changes" /home/$THEUSER/.bashrc)" ];  then
 fi
 echo
 
-echo "Install python requirements. This takes a few minutes."
+echo "Install python dependencies."
 cd Python
 sudo -H pip3 install -r requirements.txt           >> installPASTA2.log
 echo
@@ -106,7 +104,7 @@ echo
 echo "Create PASTA configuration file .pastaELN.json in home directory"
 cd ..
 CDB_PASSW=$(sudo -u $THEUSER python3 makeConfigFile.py $pasta_src $pasta)
-echo "Passwort $CDB_PASSW"
+echo "Password $CDB_PASSW"
 echo
 
 
@@ -145,11 +143,6 @@ echo
 
 
 echo "Graphical user interface GUI"
-#TODO
-#cd /home/$THEUSER/$pasta_src/gui
-#sudo -u $THEUSER npm install                                         >> installPASTA2.log
-#sudo PATH=$PATH:/home/$THEUSER/$pasta_src/main -u $THEUSER npm start >> installPASTA2.log 2>&1
-
 echo -e "\033[0;31m=========================================================="
 echo -e "To start PASTA: there are desktop icon"
 echo -e "  alternatively start the .AppImage in PASTA's source"

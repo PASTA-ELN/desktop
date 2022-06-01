@@ -24,9 +24,9 @@ def testPython():
     if 'rated at 10.00/10' not in result.stdout.decode('utf-8'):
       print(fileName+'|'+result.stdout.decode('utf-8').strip())
       success = False
-  for fileName in os.listdir('extractors'):
+  for fileName in os.listdir('Extractors'):
     if not fileName.endswith('.py'): continue
-    result = subprocess.run(['pylint','extractors/'+fileName], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+    result = subprocess.run(['pylint','Extractors/'+fileName], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
     if 'rated at 10.00/10' not in result.stdout.decode('utf-8'):
       print(fileName+'|'+result.stdout.decode('utf-8').strip())
       success = False
@@ -213,7 +213,6 @@ def compareDOM_ELECTRON():
   return
 
 
-
 def testDOM():
   """
   TEST REACT-DOM CODE
@@ -275,9 +274,13 @@ def testDOM():
       fOut.write(text)
     # find all children processes and terminate everything
     allPIDs = [server.pid]
-  allPIDs += [i.pid for i in psutil.Process(allPIDs[0]).children(recursive=True)]
-  for pid in allPIDs:
-    psutil.Process(pid).terminate()
+    allPIDs += [i.pid for i in psutil.Process(allPIDs[0]).children(recursive=True)]
+    for pid in allPIDs:
+      try:
+        psutil.Process(pid).terminate()
+      except:
+        print('Stopping process',pid,'failed')
+        pass
   print('  -- Server stopped')
   ## Done with all
   os.chdir('..')
@@ -334,8 +337,8 @@ def testDocumentation():
   """
   TEST DOCUMENTATION
   """
-  print('==== Documents ====')
-  os.chdir('Documents')
+  print('==== Documentation ====')
+  os.chdir('Documentation')
   ### git test
   result = subprocess.check_output(['git','status'], stderr=subprocess.STDOUT)
   if len([1 for i in result.decode('utf-8').split('\n') if i.startswith('\tmodified:')])==0:
