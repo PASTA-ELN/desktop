@@ -387,6 +387,10 @@ def gitCommitPush(msg):
   for i in ['Python','DOM','Electron','Desktop','Documentation']:
     print("\n\n------------------------------\nENTER DIRECTORY:",i)
     os.chdir(i)
+    if i=='Desktop':
+      os.chdir('Python')
+      os.system('git pull')
+      os.chdir('..')
     os.system('git commit -a -m "'+msg+'"')
     os.system('git push')
     os.chdir('..')
