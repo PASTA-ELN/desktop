@@ -63,4 +63,5 @@ jobs:
         echo "======= extractor scan ======="
         python3 pastaELN.py extractorScan
         echo "==== verify installation ====="
+        env
         python3 Tests/verifyInstallation.py
