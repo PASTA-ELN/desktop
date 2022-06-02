@@ -62,5 +62,5 @@ jobs:
         echo "======= extractor scan ======="
         python3 pastaELN.py extractorScan
         echo "==== verify installation ====="
-        PYTHONPATH=$PYTHONPATH:home/runner/work/desktop/desktop
+        PYTHONPATH=$PYTHONPATH:home/runner/work/desktop/desktop/Python
         python3 Tests/verifyInstallation.py
