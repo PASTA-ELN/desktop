@@ -53,7 +53,13 @@ jobs:
         curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes
     - name: Run a short tests
       run: |
+        echo "======== check setup ========="
+        echo "${CDB_USER} : ${CDB_PASSW}"
+        more ~/.pastaELN.json
         cd Python
+        echo "======= shot test ==============="
         python3 pastaELN.py test
+        echo "======= extractor scan ==============="
         python3 pastaELN.py extractorScan
+        echo "======= verify installation ==============="
         python3 Tests/verifyInstallation.py
