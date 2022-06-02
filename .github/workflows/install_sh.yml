@@ -58,7 +58,7 @@ jobs:
         more ~/.pastaELN.json
         cd Python
         ls
-        echo "======= shot test ============"
+        echo "======= short test ============"
         python3 pastaELN.py test
         echo "======= extractor scan ======="
         python3 pastaELN.py extractorScan
