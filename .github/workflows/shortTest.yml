@@ -18,7 +18,7 @@ jobs:
       run: |
         ls -la
         mkdir ../PastaData
-        cat "TEST ME" > ../PastaData/test
+        echo "TEST ME" > ../PastaData/test
         ls -la ../PastaData
         echo ${GITHUB_WORKSPACE}
         ls -la ${GITHUB_WORKSPACE}
