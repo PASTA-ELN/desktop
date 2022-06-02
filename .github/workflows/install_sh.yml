@@ -3,6 +3,7 @@ name: Verify install.sh
 on: [push]
 
 env:
+  PYTHONPATH: home/runner/work/desktop/desktop/Python
   CDB_USER: admin
   CDB_PASSW: NzRhMjJiZDdm
 # password hard coded since I cannot get the automatic creation to work
@@ -62,5 +63,4 @@ jobs:
         echo "======= extractor scan ======="
         python3 pastaELN.py extractorScan
         echo "==== verify installation ====="
-        echo "PYTHONPATH=home/runner/work/desktop/desktop/Python" >> $GITHUB_ENV
         python3 Tests/verifyInstallation.py
