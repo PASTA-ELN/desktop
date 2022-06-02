@@ -29,4 +29,6 @@ jobs:
         echo "CD and LS Workspace"
         cd ${GITHUB_WORKSPACE}
         ls -la
-        python3 makeConfigFile.py ${GITHUB_WORKSPACE} PastaData
+        echo "make config and show home directory"
+        python3 makeConfigFile.py work/desktop/desktop PastaData
+        ls -la /home/runner
