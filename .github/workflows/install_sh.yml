@@ -39,7 +39,7 @@ jobs:
     - name: Create PASTA configuration file .pastaELN.json in home directory
       run: |
         CDB_PASSW=$(python3 makeConfigFile.py work/desktop/desktop work/desktop/PastaData ${CDB_PASSW})
-        echo "::set-env name=PYTHONPATH::home/runner/work/desktop/desktop"
+        echo "PYTHONPATH=home/runner/work/desktop/desktop" >> $GITHUB_ENV
         echo 'password ${CDB_PASSW}'
     - name: Install CouchDB
       run: |
