@@ -38,7 +38,7 @@ jobs:
         pip install -r Python/requirements.txt
     - name: Create PASTA configuration file .pastaELN.json in home directory
       run: |
-        CDB_PASSW=$(python3 makeConfigFile.py ${GITHUB_WORKSPACE} PastaData)
+        CDB_PASSW=$(python3 makeConfigFile.py work/desktop/desktop PastaData)
         echo 'password ${CDB_PASSW}'
     - name: Install CouchDB
       run: |
