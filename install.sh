@@ -138,6 +138,12 @@ echo '  "remote" do not matter, either.'
 sudo PYTHONPATH=/home/$THEUSER/$pasta_src/Python -u $THEUSER python3 pastaELN.py extractorScan
 echo
 echo "Run a short test for 10-20sec?"
+read -p "Do you really want to continue: This will delete things! [y/N] ? " yesno
+if [[ $yesno = 'N' ]] || [[ $yesno = 'n' ]] || [[ $yesno = '' ]]
+then
+  echo "  Did not destroy anything"
+  exit
+fi
 sudo PYTHONPATH=/home/$THEUSER/$pasta_src/Python -u $THEUSER python3 Tests/verifyInstallation.py
 echo
 
