@@ -1,0 +1,26 @@
+name: Short test of directories
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    - name: test
+      run: |
+        ls -la
+        mkdir ../PastaData
+        cat "TEST ME" > ../PastaData/test
+        ls -la ../PastaData
+        echo ${GITHUB_WORKSPACE}
+        ls -la ${GITHUB_WORKSPACE}
+        cd ${GITHUB_WORKSPACE}
+        ls -la
