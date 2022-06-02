@@ -16,11 +16,17 @@ jobs:
         python-version: 3.9
     - name: test
       run: |
+        echo "Start directory"
         ls -la
+        echo "Create dirctory with content"
         mkdir ../PastaData
         echo "TEST ME" > ../PastaData/test
         ls -la ../PastaData
+        echo "Workspace:"
         echo ${GITHUB_WORKSPACE}
+        echo "LS Workspace"
         ls -la ${GITHUB_WORKSPACE}
+        echo "CD and LS Workspace"
         cd ${GITHUB_WORKSPACE}
         ls -la
+        python3 makeConfigFile.py ${GITHUB_WORKSPACE} PastaData
