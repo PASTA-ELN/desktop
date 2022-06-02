@@ -3,7 +3,6 @@ name: Verify install.sh
 on: [push]
 
 env:
-  PYTHONPATH: home/runner/work/desktop/desktop/Python
   CDB_USER: admin
   CDB_PASSW: NzRhMjJiZDdm
 # password hard coded since I cannot get the automatic creation to work
@@ -58,6 +57,7 @@ jobs:
         echo "${CDB_USER} : ${CDB_PASSW}"
         more ~/.pastaELN.json
         cd Python
+        ls
         echo "======= shot test ============"
         python3 pastaELN.py test
         echo "======= extractor scan ======="
