@@ -39,6 +39,7 @@ jobs:
     - name: Create PASTA configuration file .pastaELN.json in home directory
       run: |
         CDB_PASSW=$(python3 makeConfigFile.py work/desktop/desktop work/desktop/PastaData ${CDB_PASSW})
+        echo "::set-env name=PYTHONPATH::home/runner/work/desktop/desktop"
         echo 'password ${CDB_PASSW}'
     - name: Install CouchDB
       run: |
@@ -57,9 +58,9 @@ jobs:
         echo "${CDB_USER} : ${CDB_PASSW}"
         more ~/.pastaELN.json
         cd Python
-        echo "======= shot test ==============="
+        echo "======= shot test ============"
         python3 pastaELN.py test
-        echo "======= extractor scan ==============="
+        echo "======= extractor scan ======="
         python3 pastaELN.py extractorScan
-        echo "======= verify installation ==============="
+        echo "==== verify installation ====="
         python3 Tests/verifyInstallation.py
