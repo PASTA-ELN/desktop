@@ -44,7 +44,14 @@ jobs:
       run: |
         echo "======== check setup ========="
         echo "${CDB_USER} : ${CDB_PASSW}"
+        echo "------------------------------"
         more ~/.pastaELN.json
+        echo "------------------------------"
+        conda env list
+        conda activate base
+        pip list
+        pip3 list
+        echo "------------------------------"
         cd Python
         ls
         echo "======= short test ============"
