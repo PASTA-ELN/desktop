@@ -48,7 +48,7 @@ jobs:
         more ~/.pastaELN.json
         echo "------------------------------"
         conda env list
-        conda activate base
+        conda info
         pip list
         pip3 list
         echo "------------------------------"
