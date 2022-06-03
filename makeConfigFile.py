@@ -17,10 +17,8 @@ if len(sys.argv)<4:
 else:
   password = sys.argv[3]
 
-print("1", softwareDir, pastaDir, homeDir)
 softwareDir = homeDir+os.sep+softwareDir
 pastaDir = homeDir+os.sep+pastaDir
-print("2", softwareDir, pastaDir, homeDir)
 content = {}
 content['default']     = 'research'
 content['links']       = {'research':{\

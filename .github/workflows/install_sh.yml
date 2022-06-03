@@ -1,4 +1,4 @@
-name: Verify install.sh
+name: Verify Linux installation
 
 on: [push]
 
