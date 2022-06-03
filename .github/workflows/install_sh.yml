@@ -58,4 +58,4 @@ jobs:
         echo "======= extractor scan ======="
         python3 pastaELN.py extractorScan
         echo "==== verify installation: not executed since datalad cannot be installed somehow ====="
-        # python3 Tests/verifyInstallation.py
+        python3 Tests/verifyInstallation.py
