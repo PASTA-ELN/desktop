@@ -24,7 +24,7 @@ jobs:
         mkdir ../PastaData
     - name: Ensure python, pip and pandoc are installed.
       run: |
-        conda install pandoc cloudant pandas numpy Js2Py matplotlib Pillow datalad
+        conda install -c conda-forge pandoc cloudant pandas numpy Js2Py matplotlib Pillow datalad
     - name: Create PASTA configuration file .pastaELN.json in home directory
       run: |
         CDB_PASSW=$(python3 makeConfigFile.py work/desktop/desktop work/desktop/PastaData ${CDB_PASSW})
