@@ -39,10 +39,8 @@ REM echo with preceeding space
 REM chain commands, use & at beginning of new line
 if errorlevel==1 (echo.  Download python now) else (echo.  Python is installed in version 3.& goto end_python)
 pause
-if not exist %downloadDir%/python-3.8.7-amd64.exe (bitsadmin.exe /TRANSFER python3 https://www.python.org/ftp/python/3.8.7/python-3.8.7-amd64.exe  %downloadDir%/python-3.8.7-amd64.exe)
-echo IMPORTANT: SELECT "Add Python 3.8 to PATH" inside the installer
-pause
-start /WAIT %downloadDir%/python-3.8.7-amd64.exe
+if not exist %downloadDir%/python-3.9.13-amd64.exe (bitsadmin.exe /TRANSFER python3 https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe  %downloadDir%/python-3.9.13-amd64.exe)
+start /WAIT %downloadDir%/python-3.9.13-amd64.exe  /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
 :end_python
 echo.
 
@@ -58,15 +56,15 @@ if errorlevel==1 (echo.  setting path now^
   & echo.  from the search results. In the window for USER-VARIABLES, click^
   & echo.  on "Path" and "Edit...". Click new three times and enter each time^
   & echo.  with copy [select+Return] - paste. If content is already inside, skip it.^
-  & echo.  - C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python38^
-  & echo.  - C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python38\Scripts^
+  & echo.  - C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python39^
+  & echo.  - C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python39\Scripts^
   & echo.  - %softwareDir%\main^
   & echo.^
   & pause
   ) else (echo.  no need to set path variable as it seems to be correct)
 echo.
 REM this does not work in a reproducable fashion
-REM  setx PATH "%PATH%;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python38;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python38\Scripts;%softwareDir%\main"^
+REM  setx PATH "%PATH%;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python39;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python39\Scripts;%softwareDir%\main"^
 
 REM set PYTHONPATH already. Possible restarts will take this already into account
 echo Set environment variables: PYTHONPATH
@@ -85,7 +83,7 @@ pause
 
 echo Install basic python packages
 pip.exe install win-unicode-console pywin32 pywin32-ctypes >nul
-pip.exe install matplotlib pandas wget spyder opencv-python >nul
+pip.exe install matplotlib pandas wget spyder >nul
 echo.
 
 echo Test if python is fully working: plot a sine-curve
