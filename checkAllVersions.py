@@ -378,7 +378,6 @@ def gitCommitPush(msg):
   """
   Go through all subfolders and
     - do a git commit with message msg
-    - tag it with a version number
     - git push
 
   Args:
