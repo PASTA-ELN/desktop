@@ -19,43 +19,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: 3.9
-    - name: Adopt directory structure and create .pastaELN.json
+    - name: Install dependencies
       run: |
-        mkdir ../PastaData
-    - name: Create PASTA configuration file .pastaELN.json in home directory
-      run: |
-        CDB_PASSW=$(python3 makeConfigFile.py work/desktop/desktop work/desktop/PastaData ${CDB_PASSW})
-        echo 'password ${CDB_PASSW}'
-    - name: Install CouchDB
-      run: |
-        sudo snap install couchdb
-        sudo snap set couchdb admin=$CDB_PASSW
-        sudo snap start couchdb
-        sudo snap connect couchdb:mount-observe
-        sudo snap connect couchdb:process-control
-        sleep 5
-        curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_users
-        curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_replicator
-        curl -X PUT http://$CDB_USER:$CDB_PASSW@127.0.0.1:5984/_global_changes
-    - name: Run a short tests
-      run: |
-        echo "=== install conda packages which do not remain across steps ==="
-        conda install -c conda-forge pandoc cloudant pandas numpy Js2Py matplotlib Pillow datalad
-        echo "======== check setup ========="
-        echo "${CDB_USER} : ${CDB_PASSW}"
-        echo "------------------------------"
-        more ~/.pastaELN.json
-        echo "------------------------------"
-        conda env list
-        conda info
-        pip list
-        pip3 list
-        echo "------------------------------"
-        cd Python
-        ls
-        echo "======= short test ============"
-        python3 pastaELN.py test
-        echo "======= extractor scan ======="
-        python3 pastaELN.py extractorScan
-        echo "==== verify installation ====="
-        python3 Tests/verifyInstallation.py
+        $CONDA/bin/conda env update --file environment.yml --name base
