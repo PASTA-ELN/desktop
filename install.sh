@@ -59,15 +59,15 @@ echo
 sudo -u $THEUSER mkdir /home/$THEUSER/$pasta
 
 echo "Ensure python, pip and pandoc are installed."
-sudo add-apt-repository -y universe                    >> installPASTA2.log  2>&1
-sudo apt-get install -y python3 python3-pip pandoc fuse npm >> installPASTA2.log  2>&1
+sudo add-apt-repository -y universe                     >> installPASTA2.log  2>&1
+sudo apt-get install -y python3 python3-pip pandoc fuse >> installPASTA2.log  2>&1
 echo
 
 echo "Install git, git-annex, datalad"
 wget -q http://neuro.debian.net/lists/focal.de-fzj.full -O /etc/apt/sources.list.d/neurodebian.sources.list
 sudo apt-key adv --recv-keys --keyserver hkps://keyserver.ubuntu.com 0xA5D32F012649A5A9 >> installPASTA2.log  2>&1
 sudo apt-get update             >> installPASTA2.log  2>&1
-sudo apt-get install -y datalad >> installPASTA2.log  2>&1
+sudo apt-get install -y git-annex-standalone >> installPASTA2.log  2>&1
 echo
 
 OUTPUT=$(sudo -u $THEUSER git config -l | grep "user")

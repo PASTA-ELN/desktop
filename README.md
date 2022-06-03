@@ -1,6 +1,4 @@
-
-[![Pylint](https://github.com/PASTA-ELN/desktop/actions/workflows/pylint.yml/badge.svg)](https://github.com/PASTA-ELN/desktop/actions/workflows/pylint.yml)
-[![Verify install.sh](https://github.com/PASTA-ELN/desktop/actions/workflows/main.yml/badge.svg)](https://github.com/PASTA-ELN/desktop/actions/workflows/main.yml)
+[![Verify Linux installation](https://github.com/PASTA-ELN/desktop/actions/workflows/install_sh.yml/badge.svg)](https://github.com/PASTA-ELN/desktop/actions/workflows/install_sh.yml)
 
 ### PASTA-ELN | Content for desktop computers
 Installation scripts are given for Linux/Ubuntu and Windows
