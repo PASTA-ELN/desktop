@@ -1,27 +1,35 @@
 @echo off
+REM Things to uninstall: Anaconda, Apache CouchDB, Git, NodeJS, Pandoc, PASTA, Python, Python Launcher 
+REM Adopt paths: remove python path; reduce PATH
+REM Remove: pasta_dir and temp_download
 REM print content line. No " '
 echo Installer for PASTA database on Windows Systems
-echo IMPORTANT: always select to adjust the PATH VARIABLE during installation.
-echo IMPORTANT: if you have problems, visit https://jugit.fz-juelich.de/pasta/main/-/wikis/home#installation-scripts
-echo Default choices are accepted by return: [Y/n]->yes; [default]->default
+echo - Twice, in the middle of the process, you have to restart the commandline and this script. You will be notified when.
+echo - You will be asked to install packages, please answer yes. Sometimes, the options are choosen automatically and you are not asked.
+echo - If you don't want to install into 'My Documents'. First install into 'My Documents' and after installation follow 
+echo.   instructions, see next item.
+echo - If you have problems, visit https://pasta-eln.github.io/troubleshooting.html#problems-during-installation
+echo - Default choices are accepted by return: [Y/n]->yes; [default]->default
 
 REM print empty line
 echo.
 REM ask for user input
-echo One empty (for safety) directory is required for source code and test data.
-echo Your own data can be saved elsewhere.
+echo One empty (for safety) directory is required for source code and one for the research data.
 set softwareDir=
-set pasta=
+set pastaDir=
 set /p softwareDir="Which subdirectory of 'My Documents' should the software be installed to [e.g. pasta_source]? "
+set /p pastaDir="Which subdirectory of 'My Documents' should the research data be saved in [e.g. pasta_data]? "
 REM check for empty line
 if not defined softwareDir (set softwareDir=pasta_source)
-if not defined pasta (set pasta=pasta)
-set softwareDir=%HOMEDRIVE%%HOMEPATH%\Documents\%softwareDir%
-set downloadDir=%softwareDir%\tempDownload
-mkdir %softwareDir%
+if not defined pastaDir (set pastaDir=pasta_data)
+set softwareDir=Documents\%softwareDir%
+set pastaDir=Documents\%pastaDir%
+set downloadDir=%HOMEDRIVE%%HOMEPATH%\Documents\tempDownload
 mkdir %downloadDir%
-mkdir %softwareDir%\pasta_tutorial
+mkdir %HOMEDRIVE%%HOMEPATH%\%pastaDir%
 echo.
+REM Wait for user feedback: pause
+REM pause
 
 REM Install Python, Set PAPTH, Set PYTHONPATH, Install some python-packages
 echo Ensure that the ordinary python is installed
@@ -33,20 +41,19 @@ echo.  creates a bubble, which is difficult to
 echo.  penetrate. If you have it installed, stop here,
 echo.  uninstall Anaconda and restart this script.
 pause
-FOR /F "tokens=* USEBACKQ" %%F in (`python --version`) do (set var=%%F)
-echo %var% | findstr /C:"Python 3" 1>nul
 REM echo with preceeding space
 REM chain commands, use & at beginning of new line
+FOR /F "tokens=* USEBACKQ" %%F in (`python --version`) do (set var=%%F)
+echo %var% | findstr /C:"Python 3" 1>nul
 if errorlevel==1 (echo.  Download python now) else (echo.  Python is installed in version 3.& goto end_python)
-pause
 if not exist %downloadDir%/python-3.9.13-amd64.exe (bitsadmin.exe /TRANSFER python3 https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe  %downloadDir%/python-3.9.13-amd64.exe)
 start /WAIT %downloadDir%/python-3.9.13-amd64.exe  /quiet InstallAllUsers=1 PrependPath=1 Include_test=0
+echo Installed Python
 :end_python
 echo.
 
-
 echo Set environment variables: PATH
-echo %PATH% | findstr "main">nul
+echo %PATH% | findstr "Python">nul
 REM echo with preceeding space
 REM chain commands, use & at beginning of new line
 if errorlevel==1 (echo.  setting path now^
@@ -58,7 +65,8 @@ if errorlevel==1 (echo.  setting path now^
   & echo.  with copy [select+Return] - paste. If content is already inside, skip it.^
   & echo.  - C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python39^
   & echo.  - C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python39\Scripts^
-  & echo.  - %softwareDir%\main^
+  & echo.  - %HOMEDRIVE%%HOMEPATH%\%softwareDir%\Python^
+  & echo.  Restart cmd and install.bat^
   & echo.^
   & pause
   ) else (echo.  no need to set path variable as it seems to be correct)
@@ -68,7 +76,7 @@ REM  setx PATH "%PATH%;C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python3
 
 REM set PYTHONPATH already. Possible restarts will take this already into account
 echo Set environment variables: PYTHONPATH
-setx PYTHONPATH "%softwareDir%\experimental-micromechanics\src;%softwareDir%\main"
+setx PYTHONPATH "%HOMEDRIVE%%HOMEPATH%\Documents\%softwareDir%"
 echo.
 
 
@@ -81,7 +89,7 @@ echo.   - START new cmd.exe window
 echo.   - restart install.bat
 pause
 
-echo Install basic python packages
+echo Install basic python packages for windows
 pip.exe install win-unicode-console pywin32 pywin32-ctypes >nul
 pip.exe install matplotlib pandas wget spyder >nul
 echo.
@@ -104,17 +112,16 @@ echo.
 pause
 
 
-REM START WITH PANDOC
-echo Install pandoc
-set var=void void
-FOR /F "tokens=* USEBACKQ" %%F in (`where pandoc`) do (set var=%%F)
-echo %var% | findstr "void">nul
-if errorlevel==1 (echo. Pandoc is installed & goto end_pandoc)
-echo.  Download Pandoc now
-if not exist %downloadDir%\pandoc-2.11.3.2-windows-x86_64.msi (python.exe -m wget -o %downloadDir% https://github.com/jgm/pandoc/releases/download/2.11.3.2/pandoc-2.11.3.2-windows-x86_64.msi)
-start /WAIT %downloadDir%\pandoc-2.11.3.2-windows-x86_64.msi
-:end_pandoc
-echo.
+@REM echo Install pandoc
+@REM set var=void void
+@REM FOR /F "tokens=* USEBACKQ" %%F in (`where pandoc`) do (set var=%%F)
+@REM echo %var% | findstr "void">nul
+@REM if errorlevel==1 (echo. Pandoc is installed & goto end_pandoc)
+@REM echo.  Download Pandoc now
+@REM if not exist %downloadDir%\pandoc-2.11.3.2-windows-x86_64.msi (python.exe -m wget -o %downloadDir% https://github.com/jgm/pandoc/releases/download/2.11.3.2/pandoc-2.11.3.2-windows-x86_64.msi)
+@REM start /WAIT %downloadDir%\pandoc-2.11.3.2-windows-x86_64.msi
+@REM :end_pandoc
+@REM echo.
 
 
 REM START WITH GIT, Git-annex, git-credentials
@@ -122,14 +129,7 @@ echo Install git
 set var=void void
 FOR /F "tokens=* USEBACKQ" %%F in (`where git`) do (set var=%%F)
 echo %var% | findstr "void">nul
-if errorlevel==1 (echo. Git is installed) else (^
-    echo.  Download git now^
-  & python.exe -m wget -o %downloadDir% https://github.com/git-for-windows/git/releases/download/v2.30.0.windows.1/Git-2.30.0-64-bit.exe^
-  & echo Keep all the default options including...^
-  & echo In "Adjusting your PATH environment" keep recommended: "Git from the command line and also ..."^
-  & pause^
-  & start /WAIT %downloadDir%\Git-2.30.0-64-bit.exe^
-  )
+if errorlevel==1 (echo. Git is installed) else (winget install --id Git.Git -e --source winget)
 echo.
 echo Install git-annex
 set var=void void
@@ -171,114 +171,76 @@ git config --global --add user.email "%var%"
 echo.
 
 
+REM Copying PASTA from github
+echo Copying PASTA from github
+git clone https://github.com/PASTA-ELN/desktop.git %HOMEDRIVE%%HOMEPATH%\%softwareDir%
+cd %HOMEDRIVE%%HOMEPATH%\%softwareDir%
+git clone https://github.com/PASTA-ELN/Python.git
+echo.
+
+
+REM Install python dependencies
+echo Install python dependencies
+cd Python
+pip3 install -r requirements.txt >nul
+echo.
+
+
 REM Start with couchDB
+REM the silent install https://docs.couchdb.com/en/3.1.2/install/windows.html#silent-install would be great
+REM   if I do it, I cannot connect to it
+REM   the user is not asked (change into admin mode) and hence the installation does not start
+REM   solution unclear
 echo Install couchDB
-echo.  If Windows warns you, go to **more information** and
-echo.  **run anyway**. Remeber the user and password that you
-echo.  enter in the setup utility. If the webbrowser does not
-echo.  start automatically, go to http://localhost:5984/_utils
+echo.  - If Windows warns you, go to **more information** and **run anyway**. 
+echo.  - Accept the default setting and the license
+echo.  - As user name enter 'admin'. Remember password that you enter. Validate the entries.
 echo.
 if exist "%ProgramFiles%\Apache CouchDB\bin" (goto end_couchdb)
-if not exist %downloadDir%/apache-couchdb-3.1.1.msi (python.exe -m wget -o %downloadDir% https://couchdb.neighbourhood.ie/downloads/3.1.1/win/apache-couchdb-3.1.1.msi)
-start /WAIT %downloadDir%\apache-couchdb-3.1.1.msi
+if not exist %downloadDir%\apache-couchdb-3.1.1.msi (python.exe -m wget -o %downloadDir% https://couchdb.neighbourhood.ie/downloads/3.1.1/win/apache-couchdb-3.1.1.msi)
+start /wait %downloadDir%\apache-couchdb-3.1.1.msi
 :end_couchdb
-REM https://docs.couchdb.org/en/3.2.0/install/windows.html
-
-echo Please note: user name and password are scrambled at first usage, aka they are not stored as plain text but in vault.
-set /p CDB_USER="Which user-name did you use? [admin] "
 set /p CDB_PASSW="Which password did you enter? "
-if not defined CDB_USER (set CDB_USER=admin)
 cls
 
-
-REM Clone source from repository
-echo Clone files from repositories
-cd %softwareDir%
-git clone https://jugit.fz-juelich.de/s.brinckmann/experimental-micromechanics
-git clone https://jugit.fz-juelich.de/pasta/main.git
-git clone https://jugit.fz-juelich.de/pasta/gui.git
-
-echo Install python libraries for backend
-cd %softwareDir%\main
-pip.exe install -r requirements.txt  >nul
-echo.
-
-echo Create basic .pastaELN.json configuration
-cd %HOMEDRIVE%%HOMEPATH%
-set softwareDirString=%softwareDir:\=\\%
-echo { > .pastaELN.json
-echo   "softwareDir": "%softwareDir%\main",>> .pastaELN.json
-echo   "userID": "%USERNAME%",>> .pastaELN.json
-echo   "default": "pasta_tutorial",>> .pastaELN.json
-echo   "magicTags": ["P1","P2","P3","TODO","WAIT","DONE"],>> .pastaELN.json
-echo.  >> .pastaELN.json
-echo   "links": {>> .pastaELN.json
-echo     "pasta_tutorial": {>> .pastaELN.json
-echo       "local": {>> .pastaELN.json
-echo         "user": "%CDB_USER%",>> .pastaELN.json
-echo         "password": "%CDB_PASSW%",>> .pastaELN.json
-echo         "database": "pasta_tutorial",>> .pastaELN.json
-echo         "path": "%softwareDirString%\\pasta_tutorial">> .pastaELN.json
-echo       },>> .pastaELN.json
-echo       "remote": {}>> .pastaELN.json
-echo     }>> .pastaELN.json
-echo   },>> .pastaELN.json
-echo.  >> .pastaELN.json
-echo.  >> .pastaELN.json
-echo   "tableFormat": {>> .pastaELN.json
-echo     "x0":{"-label-":"Projects","-default-": [22,6,50,22]},>> .pastaELN.json
-echo     "measurement":{"-default-": [24,7,23,23,-5,-6,-6,-6]},>> .pastaELN.json
-echo     "sample":{"-default-": [23,23,23,23,-5]},>> .pastaELN.json
-echo     "procedure":{"-default-": [20,20,20,40]}>> .pastaELN.json
-echo   }>> .pastaELN.json
-echo }>> .pastaELN.json
+REM Create PASTA configuration file .pastaELN.json in home directory
+echo Create PASTA configuration file .pastaELN.json in home directory
+cd ..
+python makeConfigFile.py %softwareDir% %pastaDir% %CDB_PASSW%
 echo.
 
 
 REM Run a two short tests of the python backend
 echo Run a very short (5sec) test of the python backend
-cd %softwareDir%\main
+cd Python
 python pastaELN.py test
 echo.
-echo If this test is not successful, it is likely that you entered the wrong username
-echo.  and password. Open the file %HOMEDRIVE%%HOMEPATH%\.pastaELN.json in an editor and
-echo.  correct the entries after "user" and "password". "-userID" does not matter.
-echo.  Entries under "remote" do not matter.
 python pastaELN.py extractorScan
 echo.
 echo Run a short (20-80sec) test of the python backend
-python Tests\testTutorial.py
+python Tests\verifyInstallation.py
 echo.
 
 
-REM START WITH NODE, NPM, do "npm install" and "npm start"
-echo Install NPM
-set var=void void
-FOR /F "tokens=* USEBACKQ" %%F in (`where npm`) do (set var=%%F)
-echo %var% | findstr "void">nul
-if errorlevel==1 (echo. NPM is installed & goto end_npm)
-echo.  Download NPM now
-if not exist %downloadDir%\node-v14.15.4-x64.msi (python.exe -m wget -o %downloadDir% https://nodejs.org/dist/v14.15.4/node-v14.15.4-x64.msi)
-start /WAIT %downloadDir%\node-v14.15.4-x64.msi
-:end_npm
-echo.
-
-echo install graphical user interface (GUI) requirements
-echo Don't care about vulnerablies right now in this test.
-cd %softwareDir%\gui
-cmd /c "npm install"
-
-echo.
+echo Graphical user interface GUI
 echo ==========================================================
-echo Start the graphical user interface, which might take a while (1 min).
-echo   Please ignore: Error installing REDUX_DEVTOOLS extension
-echo Afterwards, stop the script with Ctrl-C (multiple times)
-echo If you want to do that in the future:
-echo.  cd %softwareDir%\gui
-echo.  npm start
-echo Enjoy the PASTA database.
+%HOMEDRIVE%%HOMEPATH%\%softwareDir%\PASTA-Setup-win.exe
+echo To start PASTA: there are desktop icon
+echo.
+echo It is good to start with Projects, then Samples and Procedures and finally
+echo Measurements.
+echo.
+echo MAKE SURE, you wrote down PASSWORD FOR SAFEKEEPING: %CDB_PASSW%
+echo Currently, the configuration ~/.pastaELN.json is unscrambled
+echo.   use PASTA for some time, then run 'pastaELN.py scramble' to scramble them
+echo.   after some more time, delete the backup '~/.pastaELN_BAK.json'
 echo ==========================================================
 echo.
-npm start
 
 pause
+REM After update, GUI has to be uninstalled and reinstalled
+REM electron readme: not installed anymore, install nodejs (no tools like cocolay required), npm install, npm start
+
+REM winget install OpenJS.NodeJS.LTS
+REM mklink %HOMEDRIVE%%HOMEPATH%\Desktop\PASTA_ELN %HOMEDRIVE%%HOMEPATH%\%softwareDir%\PASTA-Setup-win.exe
+
