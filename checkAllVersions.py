@@ -247,12 +247,13 @@ def testDOM():
   # Git, expect clean git before testing (not easy since, linting/etc. can cause small changes)
 
   ### cypress, after linting
-  text = None
-  with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
-    text = fIn.read()
-  text = text.replace('const ELECTRON = false;','const ELECTRON = true;')
-  with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
-    fOut.write(text)
+  #UNTIL DOM IS REALLY USED, keep it simple: always on
+  # text = None
+  # with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
+  #   text = fIn.read()
+  # text = text.replace('const ELECTRON = false;','const ELECTRON = true;')
+  # with open('src/localInteraction.js','w', encoding='utf-8') as fOut:
+  #   fOut.write(text)
   print('  -- Start cypress test: Be patient!')
   with subprocess.Popen(['npm','start'], stdout=subprocess.PIPE, stderr=subprocess.PIPE) as server:
     time.sleep(60)
@@ -410,13 +411,17 @@ def gitNewVersion(msg, version=None):
   for i in ['Python','DOM','Electron','Desktop','Documentation']:
     print("\n\n------------------------------\nENTER DIRECTORY:",i)
     os.chdir(i)
-    if version is None and i=='Python':
-      result = subprocess.run(['git','tag'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
-      version= result.stdout.decode('utf-8').strip()
-      version= version.split('\n')[-1]
-      verList= [int(i) for i in version[1:].split('.')]
-      verList[-1]+= 1
-      version= 'v'+'.'.join([str(i) for i in verList])
+    if i=='Python':
+      if version is None:
+        result = subprocess.run(['git','tag'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+        version= result.stdout.decode('utf-8').strip()
+        version= version.split('\n')[-1]
+        verList= [int(i) for i in version[1:].split('.')]
+        verList[-1]+= 1
+        version= 'v'+'.'.join([str(i) for i in verList])
+      elif version[0]!='v':
+        version = 'v'+version
+      print('\n\n====================\nVERSION:',version,'\n====================')
     if i=='Electron':
       ### package.json ###
       with open('package.json', encoding='utf-8') as fIn:
@@ -441,13 +446,13 @@ def gitNewVersion(msg, version=None):
       with open('app/renderer/components/ConfigPage.js','w', encoding='utf-8') as fOut:
         fOut.write('\n'.join(fileNew)+'\n')
       #create new version of GUI
-      # os.system('npm run build')
+      os.system('npm run build')
       shutil.copyfile('dist/pasta-'+version[1:]+'.AppImage'  ,'../Desktop/pasta-linux.AppImage')
       shutil.copyfile('dist/PASTA-'+version[1:]+'-mac.tar.gz','../Desktop/PASTA-mac.tar.gz')
       shutil.copyfile('dist/PASTA Setup '+version[1:]+'.exe' ,'../Desktop/PASTA-Setup-win.exe')
-    # os.system('git tag -a '+version+' -m "'+msg+'"')
-    # os.system('git push')
-    # os.system('git push origin '+version)
+    os.system('git tag -a '+version+' -m "'+msg+'"')
+    os.system('git push')
+    os.system('git push origin '+version)
     os.chdir('..')
   return
 
@@ -488,14 +493,3 @@ if __name__=='__main__':
     cleanAll()
     print('Only if all success: git push [everywhere]')
 
-# 2011  cd Python/
-#  2012  git fetch
-#  2013  git merge
-#  2014  cd ../Electron/
-#  2015  git fetch
-#  2016  git merge
-#  2017  cd ..
-#  2018  diff Python/ ../Python/
-#  2019  git status
-#  2020  git commit -a -m 'include python changes'
-#  2021  git push

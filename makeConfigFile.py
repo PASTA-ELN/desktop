@@ -41,22 +41,24 @@ content['tableFormat'] = {'x0':{'-label-':'Projects','-default-': [22,6,50,22]},
 with open(homeDir+os.sep+'.pastaELN.json','w') as fOut:
   fOut.write(json.dumps(content, indent=2) )
 
-content ='[Desktop Entry]\nName=PASTA ELN\nComment=PASTA electronic labnotebook\n'
-content+='Exec='+softwareDir+"/pasta-linux.AppImage\n"
-content+='Icon='+softwareDir+"/pasta.png\n"
-content+='Terminal=false\nType=Application\nCategories=Utility;Application;\n'
-try:
-  with open(homeDir+os.sep+'Desktop/pastaELN.desktop','w') as fOut:
-    fOut.write(content)
-    os.chmod(homeDir+os.sep+'Desktop/pastaELN.desktop', 0o777)
-except:
-  pass
-try:
-  with open(homeDir+os.sep+'.local/share/applications/pastaELN.desktop','w') as fOut:
-    fOut.write(content)
-    os.chmod(homeDir+os.sep+'.local/share/applications/pastaELN.desktop', 0o777)
-except:
-  pass
+#create desktop link
+if sys.platform=='linux':
+  content ='[Desktop Entry]\nName=PASTA ELN\nComment=PASTA electronic labnotebook\n'
+  content+='Exec='+softwareDir+"/pasta-linux.AppImage\n"
+  content+='Icon='+softwareDir+"/pasta.png\n"
+  content+='Terminal=false\nType=Application\nCategories=Utility;Application;\n'
+  try:
+    with open(homeDir+os.sep+'Desktop/pastaELN.desktop','w') as fOut:
+      fOut.write(content)
+      os.chmod(homeDir+os.sep+'Desktop/pastaELN.desktop', 0o777)
+  except:
+    pass
+  try:
+    with open(homeDir+os.sep+'.local/share/applications/pastaELN.desktop','w') as fOut:
+      fOut.write(content)
+      os.chmod(homeDir+os.sep+'.local/share/applications/pastaELN.desktop', 0o777)
+  except:
+    pass
 
 # end
 print(password)
