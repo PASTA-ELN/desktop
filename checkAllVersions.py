@@ -450,6 +450,7 @@ def gitNewVersion(msg, version=None):
       shutil.copyfile('dist/pasta-'+version[1:]+'.AppImage'  ,'../Desktop/pasta-linux.AppImage')
       shutil.copyfile('dist/PASTA-'+version[1:]+'-mac.tar.gz','../Desktop/PASTA-mac.tar.gz')
       shutil.copyfile('dist/PASTA Setup '+version[1:]+'.exe' ,'../Desktop/PASTA-Setup-win.exe')
+    os.system('git commit -a -m "update version numbers"')
     os.system('git tag -a '+version+' -m "'+msg+'"')
     os.system('git push')
     os.system('git push origin '+version)
