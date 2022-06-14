@@ -35,8 +35,8 @@ echo
 
 echo "Two empty (for safety) directories are required. One for the source code"
 echo "and the other as central place to store data, work in."
-read -p "  Where to store the source code? [pastaSource, i.e. /home/${THEUSER}/pastaSource] " pasta_src
-read -p "  Where to store the data? [pastaData, i.e. /home/${THEUSER}/pastaData] " pasta
+read -p "  Where to store the source code relative from home directory? [pastaSource, i.e. /home/${THEUSER}/pastaSource] " pasta_src
+read -p "  Where to store the data relative from home directory? [pastaData, i.e. /home/${THEUSER}/pastaData] " pasta
 if [ -z $pasta_src ]
 then
   pasta_src="pastaSource"
