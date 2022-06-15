@@ -368,9 +368,13 @@ def gitStatus():
   Go through all subfolders and do a git status
   """
   for i in ['Python','DOM','Electron','Desktop','Documentation']:
-    print("\n\n------------------------------\nENTER DIRECTORY:",i)
+    print("==========",i,"==========")
     os.chdir(i)
-    os.system('git status')
+    result = subprocess.check_output(['git','status'], stderr=subprocess.STDOUT)
+    result = result.decode('utf-8').split('\n')
+    if result[0]!='On branch master':
+      print("**ERROR NOT ON MASTER BRANCH!")#TODO_P3 change to color
+    print('\n'.join(result[:-1]))
     os.chdir('..')
   return
 
