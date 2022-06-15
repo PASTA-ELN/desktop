@@ -486,8 +486,9 @@ if __name__=='__main__':
       versionString = sys.argv[3] if len(sys.argv)>3 else None
       gitNewVersion(tagString, versionString)
     else:
-      print('Did not understand. Possible options are: Python, DOM, Electron, Documentation, compare, gitStatus, gitCommitPush')
-      print('  gitCommitPush: commit_message tag_messag tag_version')
+      print('Did not understand. Possible options are: ')
+      print('  Python, DOM, Electron, Documentation, compare, gitStatus, gitCommitPush, gitNewVersion')
+      print('  gitCommitPush and gitNewVersion: commit_message as first argument')
   else:
     testPython()
     compareDOM_ELECTRON()
