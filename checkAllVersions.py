@@ -19,7 +19,7 @@ def testPython():
   os.chdir('Python')
   ### pylint
   success = True
-  for fileName in ['backend.py', 'database.py', 'pastaELN.py', 'miscTools.py']:
+  for fileName in ['backend.py', 'database.py', 'pastaELN.py', 'miscTools.py','inputOutput.py']:
     result = subprocess.run(['pylint',fileName], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False)
     if 'rated at 10.00/10' not in result.stdout.decode('utf-8'):
       print(fileName+'|'+result.stdout.decode('utf-8').strip())
