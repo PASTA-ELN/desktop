@@ -426,7 +426,7 @@ def gitNewVersion(msg, version=None):
       elif version[0]!='v':
         version = 'v'+version
       print('\n\n====================\nVERSION:',version,'\n====================')
-    if i=='Electron':
+    elif i=='Electron':
       ### package.json ###
       with open('package.json', encoding='utf-8') as fIn:
         packageOld = fIn.readlines()
@@ -454,6 +454,8 @@ def gitNewVersion(msg, version=None):
       shutil.copyfile('dist/pasta-'+version[1:]+'.AppImage'  ,'../Desktop/pasta-linux.AppImage')
       # shutil.copyfile('dist/PASTA-'+version[1:]+'-mac.tar.gz','../Desktop/PASTA-mac.tar.gz')
       shutil.copyfile('dist/PASTA Setup '+version[1:]+'.exe' ,'../Desktop/PASTA-Setup-win.exe')
+    elif i=='Desktop':
+      os.system('git submodule update --remote --merge')  #include new updates to Python submodule
     os.system('git commit -a -m "update version numbers"')
     os.system('git tag -a '+version+' -m "'+msg+'"')
     os.system('git push')
