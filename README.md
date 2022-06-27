@@ -9,7 +9,7 @@ Installation scripts are given for Linux/Ubuntu and Windows
   - start script "install.bat"
   -
 - Linux:
-  - download [install.sh](https://raw.githubusercontent.com/PASTA-ELN/desktop/main/install.sh) and then using the right-mouse button to save it.
+  - download [install.sh](https://raw.githubusercontent.com/PASTA-ELN/desktop/main/install.sh) by clicking it, going to "Raw"  and then using the right-mouse button to save it.
   - use terminal to change into folder, e.g. "cd ~/Downloads"
   - "chmod 755 install.sh"
   - "sudo ./install.sh"
