@@ -452,7 +452,7 @@ def gitNewVersion(msg, version=None):
       #create new version of GUI
       os.system('npm run build')
       shutil.copyfile('dist/pasta-'+version[1:]+'.AppImage'  ,'../Desktop/pasta-linux.AppImage')
-      # shutil.copyfile('dist/PASTA-'+version[1:]+'-mac.tar.gz','../Desktop/PASTA-mac.tar.gz')
+      shutil.copyfile('dist/PASTA-'+version[1:]+'-mac.tar.gz','../Desktop/PASTA-mac.tar.gz')
       shutil.copyfile('dist/PASTA Setup '+version[1:]+'.exe' ,'../Desktop/PASTA-Setup-win.exe')
     elif i=='Desktop':
       os.system('git submodule update --remote --merge')  #include new updates to Python submodule
