@@ -4,6 +4,7 @@ runs in base-repositories. Does not enter Desktop/...
 might use lots of waiting time to ensure that things are finished
 """
 import subprocess, os, time, re, sys, datetime, json, shutil
+from pathlib import Path
 from pprint import pprint
 import unittest
 import psutil
@@ -118,6 +119,7 @@ def testPython():
     print(result.stdout.decode('utf-8'))
 
   ## Blocking Test all other pastaELN.py commands
+  print('  ---------  ')
   tests = ['test -d pasta_tutorial',
            'scanHierarchy -d pasta_tutorial -i '+docID,
            'print -d pasta_tutorial',
@@ -135,12 +137,19 @@ def testPython():
       successAll = False
       print('**FAILED pastaELN.py ',test)
       print(result.stdout.decode('utf-8'))
-  ## NON-Blocking Test all other pastaELN.py commands
+  ## NON-Blocking Test all extractor tests; external program but should work with this
+  print('  ---------  ')
+  with open(Path.home()/'.pastaELN.json','r', encoding='utf-8') as confFile:
+    configuration = json.load(confFile)
+  link = configuration['links']['pasta_tutorial']
+  pathData = link['local']['path']
+  extractorPath = configuration['extractorDir'] if 'extractorDir' in configuration else \
+                  str(self.softwarePath/'extractors')
   tests = [
-           'extractorTest -d pasta_tutorial -p IntermetalsAtInterfaces/002_SEMImages/Zeiss.tif',
-           'extractorTest -d pasta_tutorial -p IntermetalsAtInterfaces/002_SEMImages/Zeiss.tif -c measurement/tif/image/scale/adaptive']
+      pathData+'/IntermetalsAtInterfaces/002_SEMImages/Zeiss.tif',
+      pathData+'/IntermetalsAtInterfaces/002_SEMImages/Zeiss.tif -r measurement/tif/image/scale/adaptive']
   for test in tests:
-    cmd = ['pastaELN.py']+test.split(' ')
+    cmd = ['testExtractor.py']+test.split(' ')+['-d',extractorPath]
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as _:
       continue
   os.chdir('..')
