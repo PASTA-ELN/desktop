@@ -12,11 +12,12 @@ import numpy as np
 
 
 ## TEST PYTHON CODE
-def testPython():
+def testPython(logFile):
   """
   Test Python code
   """
   print('==== PYTHON ====')
+  logFile.write('\n==== PYTHON ====\n')
   os.chdir('Python')
   ### pylint
   success = True
@@ -62,7 +63,8 @@ def testPython():
     else:
       successAll = False
       print("  FAILED: Python unit test "+fileI)
-      print("    run: 'python3 Tests/"+fileI+"'")
+      print("    run: 'python3 Tests/"+fileI+"' and check logFile")
+      logFile.write(result.stdout.decode('utf-8'))
   #### section = re.findall(r'Ran \d+ tests in [\d\.]+s\\n\\n..',str(result.stdout.decode('utf-8')))
 
   ### SUB-TESTS that depend on tutorial-complex
@@ -138,7 +140,6 @@ def testPython():
       print('**FAILED pastaELN.py ',test)
       print(result.stdout.decode('utf-8'))
   ## NON-Blocking Test all extractor tests; external program but should work with this
-  print('  ---------  ')
   with open(Path.home()/'.pastaELN.json','r', encoding='utf-8') as confFile:
     configuration = json.load(confFile)
   link = configuration['links']['pasta_tutorial']
@@ -154,17 +155,18 @@ def testPython():
       continue
   os.chdir('..')
   if successAll:
-    print("ALL SUCCESS: GIT PUSH ")
+    print("ALL SUCCESS")
   return
 
 
-def compareDOM_ELECTRON():
+def compareDOM_ELECTRON(logFile):
   """
   COMPARE REACT-DOM AND REACT-ELECTRON
   """
   failure = False
   now = datetime.datetime.now().replace(microsecond=0)
   print('==== Compare DOM and Electron ====')
+  logFile.write('\n==== Compare DOM and Electron ====\n')
   print('  App.js and index.js should be different but changes should be propagated')
   with subprocess.Popen(['diff','-q','DOM/src','Electron/app/renderer'], stdout=subprocess.PIPE) as result:
     result.wait()
@@ -180,7 +182,8 @@ def compareDOM_ELECTRON():
         electronTime = now-datetime.datetime.fromtimestamp(os.path.getmtime(electronFile)).replace(microsecond=0)
         print("  Files are different\t\t\tTime since change\n   ",domFile,'\t\t',domTime,'\n   ',electronFile,'\t',electronTime)
         if not 'App.js' in domFile and not 'index.js' in domFile:
-          os.system('kdiff3 '+domFile+' '+electronFile)
+          result = subprocess.run(['diff',domFile,electronFile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False)
+          logFile.write(result.stdout.decode('utf-8').strip())
           if not 'errorCodes.js' in domFile:
             failure=True
           if domTime<electronTime:
@@ -222,11 +225,12 @@ def compareDOM_ELECTRON():
   return
 
 
-def testDOM():
+def testDOM(logFile):
   """
   TEST REACT-DOM CODE
   """
   print('==== DOM ====')
+  logFile.write('\n==== DOM ====\n')
   os.chdir('DOM')
   ### js-lint
   success = True
@@ -256,7 +260,7 @@ def testDOM():
   # Git, expect clean git before testing (not easy since, linting/etc. can cause small changes)
 
   ### cypress, after linting
-  #UNTIL DOM IS REALLY USED, keep it simple: always on
+  ######  UNTIL DOM IS REALLY USED ANYWHERE: keep it simple: always ELECTRON=true #####
   # text = None
   # with open('src/localInteraction.js','r', encoding='utf-8') as fIn:
   #   text = fIn.read()
@@ -273,6 +277,7 @@ def testDOM():
     if np.any(failures):
       print('**FAILED : cypress failed test')
       print('    - '+'\n    - '.join(np.array([line[20:-3].strip() for line in result if 'fullTitle"' in line][::2])[failures]))
+      logFile.write('\n'.join(result))
       # print('    Message of failure: '+str([line for line in result if '"message"' in line][::4]))
     else:
       print('  success: cypress')
@@ -356,19 +361,6 @@ def testDocumentation():
     print('  success: Git tree clean')
   else:
     print('  FAILED : Submit to git')
-  return
-
-
-def cleanAll():
-  """
-  Clean all versions: currently not needed
-  """
-  # print('==== Clean all versions ====')
-  # for root, _, files in os.walk('.'):
-  #   for name in files:
-  #     if name.endswith('.orig'):
-  #       print('  remove file:',os.path.join(root, name))
-  #       os.remove( os.path.join(root, name) )
   return
 
 
@@ -474,19 +466,19 @@ def gitNewVersion(msg, version=None):
 
 ###################################################################
 if __name__=='__main__':
+  if (len(sys.argv)>1 and not sys.argv[1].startswith('git')) or len(sys.argv)==1:
+    logFile = open('checkAllVersions.log','w')
   if len(sys.argv)>1:
     if 'Python' in sys.argv[1]:
-      testPython()
+      testPython(logFile)
     elif sys.argv[1]=='compare':
-      compareDOM_ELECTRON()
+      compareDOM_ELECTRON(logFile)
     elif 'DOM' in sys.argv[1]:
-      testDOM()
+      testDOM(logFile)
     elif 'Electron' in sys.argv[1]:
       testElectron()
     elif sys.argv[1]=='Documentation':
       testDocumentation()
-    elif sys.argv[1]=='cleanAll':
-      cleanAll()
     elif sys.argv[1]=='gitStatus':
       gitStatus()
     elif sys.argv[1]=='gitCommitPush':
@@ -501,12 +493,11 @@ if __name__=='__main__':
       print('  Python, DOM, Electron, Documentation, compare, gitStatus, gitCommitPush, gitNewVersion')
       print('  gitCommitPush and gitNewVersion: commit_message as first argument')
   else:
-    testPython()
-    compareDOM_ELECTRON()
-    testDOM()
+    testPython(logFile)
+    compareDOM_ELECTRON(logFile)
+    testDOM(logFile)
     testElectron()
     testDesktop()
     testDocumentation()
-    cleanAll()
-    print('Only if all success: git push [everywhere]')
+    print('... there is a log-file ...')
 
