@@ -417,6 +417,7 @@ def gitNewVersion(msg, version=None):
     print("\n\n------------------------------\nENTER DIRECTORY:",i)
     os.chdir(i)
     if i=='Python':
+      # identify new version number
       if version is None:
         result = subprocess.run(['git','tag'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
         version= result.stdout.decode('utf-8').strip()
@@ -427,6 +428,18 @@ def gitNewVersion(msg, version=None):
       elif version[0]!='v':
         version = 'v'+version
       print('\n\n====================\nVERSION:',version,'\n====================')
+      # use new version number
+      with open('pastaELN.py', encoding='utf-8') as fIn:
+        contentOld = fIn.readlines()
+      contentNew = []
+      for line in contentOld:
+        line = line[:-1]
+        if 'SOFTWARE_VERSION =' in line:
+          line = 'SOFTWARE_VERSION = "'+version+'"'
+        contentNew.append(line)
+      with open('pastaELN.py','w', encoding='utf-8') as fOut:
+        fOut.write('\n'.join(contentNew)+'\n')
+
     elif i=='Electron':
       ### package.json ###
       with open('package.json', encoding='utf-8') as fIn:
