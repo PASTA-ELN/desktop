@@ -207,7 +207,7 @@ def compareDOM_ELECTRON(logFile):
         domTime =      now-datetime.datetime.fromtimestamp(os.path.getmtime(domFile)).replace(microsecond=0)
         electronTime = now-datetime.datetime.fromtimestamp(os.path.getmtime(electronFile)).replace(microsecond=0)
         print("  Files are different\t\t\tTime since change\n   ",domFile,'\t\t',domTime,'\n   ',electronFile,'\t',electronTime)
-        os.system('kdiff3 '+domFile+' '+electronFile)
+        os.system('diff '+domFile+' '+electronFile)
         failure=True
         if domTime<electronTime:
           print('    -> DOM is newer: copy file')
